@@ -37,7 +37,7 @@ jobs:
           YC_KEY_JSON: ${{ secrets.YC_SERVICE_ACCOUNT_KEY }}
         run: |
           mkdir -p ~/yc-keys
-          printf '%s' "$YC_KEY_JSON" > yc-key.json
+          printf '%s' "$YC_KEY_JSON" > ~/yc-keys/terraform-sa-key.json
 
       - name: Terraform init
         env:
