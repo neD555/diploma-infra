@@ -40,10 +40,16 @@ jobs:
           printf '%s' "$YC_KEY_JSON" > yc-key.json
 
       - name: Terraform init
+        env:
+          TF_BACKEND_ACCESS_KEY: ${{ secrets.TF_BACKEND_ACCESS_KEY }}
+          TF_BACKEND_SECRET_KEY: ${{ secrets.TF_BACKEND_SECRET_KEY }}
         run: |
-          terraform init \
-            -backend-config="access_key=${{ secrets.TF_BACKEND_ACCESS_KEY }}" \
-            -backend-config="secret_key=${{ secrets.TF_BACKEND_SECRET_KEY }}"
+          ACCESS_KEY="$(printf '%s' "$TF_BACKEND_ACCESS_KEY" | tr -d '\r\n[:space:]')"
+          SECRET_KEY="$(printf '%s' "$TF_BACKEND_SECRET_KEY" | tr -d '\r\n[:space:]')"
+
+          terraform init -reconfigure \
+            -backend-config="access_key=$ACCESS_KEY" \
+            -backend-config="secret_key=$SECRET_KEY"
 
       - name: Terraform fmt
         run: terraform fmt -check
